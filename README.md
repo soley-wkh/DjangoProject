@@ -1,2 +1,2 @@
-# DjangoProject
-DjangoProject
+# FreshProject
+FreshProject
