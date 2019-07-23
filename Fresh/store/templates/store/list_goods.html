@@ -1,0 +1,76 @@
+{% extends 'store/base.html' %}
+{% block title %}
+    商品列表
+{% endblock %}
+{% block style %}
+    <link href="/static/store/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+{% endblock %}
+{% block content %}
+        <!-- Begin Page Content -->
+    <div class="container-fluid">
+
+          <!-- Page Heading -->
+{#    <a class="btn btn-danger" href="#">下架</a>#}
+        <a class="btn btn-warning" href="{% url 'store:add_goods' %}">添加商品</a>
+        <h1></h1>
+          <!-- DataTales Example -->
+          <div class="card shadow mb-4">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                        <th>商品名称</th>
+                        <th>商品价格</th>
+                        <th>商品数量</th>
+                        <th>出厂日期</th>
+                        <th>保质期</th>
+                        <th>操作</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                  {% for goods in page %}
+                      <tr>
+                          <td>{{ goods.goods_name }}</td>
+                          <td>
+                              <input type="text" value="{{ goods.goods_price }}">
+                          </td>
+                          <td>{{ goods.goods_number }}</td>
+                          <td>{{ goods.goods_date }}</td>
+                          <td>{{ goods.goods_safeDate }}</td>
+                          <td>
+                              <a class="btn btn-info" href="#">下架</a>
+                              <a class="btn btn-danger" href="#">删除</a>
+                          </td>
+                      </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+                  <div class="">
+                      <ul class="pagination">
+                          {% for p in page_range %}
+                              <li class="paginate_button page-item">
+                                  <a href="?keywords={{ keywords }}&page_num={{ p }}" data-dt-idx="1" tabindex="0"
+                                     class="page-link">{{ p }}</a>
+                              </li>
+                          {% endfor %}
+                      </ul>
+                  </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- /.container-fluid -->
+
+{% endblock %}
+{% block script %}
+<!-- Page level plugins -->
+  <script src="/static/store/vendor/datatables/jquery.dataTables.min.js"></script>
+  <script src="/static/store/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+  <!-- Page level custom scripts -->
+{#  <script src="/static/store/js/demo/datatables-demo.js"></script>#}
+
+{% endblock %}
