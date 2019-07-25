@@ -32,13 +32,13 @@
                   <tbody>
                   {% for goods in page %}
                       <tr>
-                          <td>{{ goods.goods_name }}</td>
+                          <td><a href="{% url 'store:goods_detail' goods.id %}">{{ goods.goods_name }}</a></td>
                           <td>
                               <input type="text" value="{{ goods.goods_price }}">
                           </td>
                           <td>{{ goods.goods_number }}</td>
-                          <td>{{ goods.goods_date }}</td>
-                          <td>{{ goods.goods_safeDate }}</td>
+                          <td>{{ goods.goods_date|date:'Y-m-d'  }}</td>
+                          <td>{{ goods.goods_safeDate}}</td>
                           <td>
                               <a class="btn btn-info" href="#">下架</a>
                               <a class="btn btn-danger" href="#">删除</a>
