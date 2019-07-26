@@ -96,7 +96,8 @@ def forgot_password(request):
 def logout(request):
     """退出"""
     response = HttpResponseRedirect('/store/login/')
-    response.delete_cookie("username")
+    for k in request.COOKIES:  # 获取当前所有key
+        response.delete_cookie(k)
     del request.session['username']
     return response
 
@@ -146,6 +147,9 @@ def register_store(request):
 @is_login
 def add_goods(request):
     """添加商品"""
+
+    goods_type_list = GoodsType.objects.all()
+
     if request.method == 'POST':
         # 获取post请求
         goods_name = request.POST.get("goods_name")
@@ -157,6 +161,9 @@ def add_goods(request):
         goods_safe_date = request.POST.get("goods_safeDate")
         goods_store = request.COOKIES.get("has_store")
 
+        goods_type = request.POST.get('type')
+        print('==============' + goods_type)
+
         # 开始保存数据
         goods = Goods()
         goods.goods_name = goods_name
@@ -166,6 +173,9 @@ def add_goods(request):
         goods.goods_description = goods_description
         goods.goods_date = goods_date
         goods.goods_safeDate = goods_safe_date
+
+        ty = GoodsType.objects.get(id=int(goods_type))
+        goods.goods_type = ty
         goods.save()
 
         # 保存多对多数据
@@ -173,16 +183,21 @@ def add_goods(request):
             Store.objects.get(id=int(goods_store))
         )
         goods.save()
-        return HttpResponseRedirect('/store/list_goods/')
+        return HttpResponseRedirect('/store/list_goods/up/')
 
-    return render(request, 'store/add_goods.html')
+    return render(request, 'store/add_goods.html', locals())
 
 
 @is_login
-def list_goods(request):
+def list_goods(request, state):
     """
     商品列表
     """
+    if state == 'up':
+        state_num = 1
+    else:
+        state_num = 0
+
     keywords = request.GET.get("keywords", "")
     page_num = request.GET.get("page_num", 1)
 
@@ -191,13 +206,14 @@ def list_goods(request):
     store = Store.objects.get(id=int(store_id))
 
     if keywords:
-        goods_list = store.goods_set.filter(goods_name__contains=keywords)
+        goods_list = store.goods_set.filter(goods_name__contains=keywords, goods_under=state_num)
     else:
-        goods_list = store.goods_set.all()
+        goods_list = store.goods_set.filter(goods_under=state_num)
     paginator = Paginator(goods_list, 3)
     page = paginator.page(int(page_num))
     page_range = paginator.page_range
-    return render(request, 'store/list_goods.html', {"page": page, "page_range": page_range, "keywords": keywords})
+    return render(request, 'store/list_goods.html',
+                  {"page": page, "page_range": page_range, "keywords": keywords, "state": state})
 
 
 @is_login
@@ -236,3 +252,61 @@ def update_goods(request, goods_id):
         return HttpResponseRedirect('/store/goods_detail/%s' % goods_id)
 
     return render(request, 'store/update_goods.html', locals())
+
+
+def goods_state(request, state):
+    if state == 'up':
+        state_num = 1
+    else:
+        state_num = 0
+    id = request.GET.get("id")
+    referer = request.META.get('HTTP_REFERER')
+    if id:
+        goods = Goods.objects.filter(id=id).first()
+        if state == 'del':
+            goods.delete()
+        else:
+            goods.goods_under = state_num
+            goods.save()
+    return HttpResponseRedirect(referer)
+
+
+@is_login
+def add_goods_type(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+        logo = request.FILES.get('logo')
+
+        goods_type = GoodsType()
+        goods_type.name = name
+        goods_type.description = description
+        goods_type.logo = logo
+        goods_type.save()
+        return HttpResponseRedirect('/store/list_goods_type/')
+
+    return render(request, 'store/goods_type_list.html', locals())
+
+
+# 商品类型管理
+@is_login
+def list_goods_type(request):
+    goods_type_list = GoodsType.objects.all()
+    if request.method == 'POST':
+        name = request.POST.get("name")
+        description = request.POST.get("description")
+        logo = request.FILES.get("logo")
+
+        goods_type = GoodsType()
+        goods_type.name = name
+        goods_type.description = description
+        goods_type.logo = logo
+        goods_type.save()
+    return render(request, 'store/goods_type_list.html', locals())
+
+
+@is_login
+def delete_goods_type(request, goods_type_id):
+    goods_type = GoodsType.objects.get(pk=goods_type_id)
+    goods_type.delete()
+    return HttpResponseRedirect('/store/list_goods_type/')

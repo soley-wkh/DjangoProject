@@ -19,9 +19,13 @@ urlpatterns = [
     path('logout/', views.logout, name='logout'),
     path('register_store/', views.register_store, name='register_store'),
     path('add_goods/', views.add_goods, name='add_goods'),
-    path('list_goods/', views.list_goods, name='list_goods'),
+    re_path(r'list_goods/(?P<state>\w+)', views.list_goods, name='list_goods'),
     re_path(r'^goods_detail/(?P<goods_id>\d+)', views.goods_detail, name='goods_detail'),
     re_path(r'^update_goods/(?P<goods_id>\d+)', views.update_goods, name='update_goods'),
+    re_path(r'goods_state/(?P<state>\w+)', views.goods_state, name='goods_state'),
+    path('list_goods_type/', views.list_goods_type, name='list_goods_type'),  # 商品类型列表
+    path('delete_goods_type/<int:goods_type_id>', views.delete_goods_type, name='delete_goods_type'),  # 删除商品类型
+    path('add_goods_type/', views.add_goods_type, name='add_goods_type'),  # 添加商品类型
 ]
 
 urlpatterns += [
