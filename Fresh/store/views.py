@@ -5,6 +5,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import HttpResponseRedirect
 
 from .models import *
+from user.models import OrderDetail, Order
 
 
 # md5加密
@@ -162,7 +163,6 @@ def add_goods(request):
         goods_store = request.COOKIES.get("has_store")
 
         goods_type = request.POST.get('type')
-        print('==============' + goods_type)
 
         # 开始保存数据
         goods = Goods()
@@ -174,14 +174,8 @@ def add_goods(request):
         goods.goods_date = goods_date
         goods.goods_safeDate = goods_safe_date
 
-        ty = GoodsType.objects.get(id=int(goods_type))
-        goods.goods_type = ty
-        goods.save()
-
-        # 保存多对多数据
-        goods.store_id.add(
-            Store.objects.get(id=int(goods_store))
-        )
+        goods.goods_type = GoodsType.objects.get(id=int(goods_type))
+        goods.store = Store.objects.get(id=int(goods_store))
         goods.save()
         return HttpResponseRedirect('/store/list_goods/up/')
 
@@ -310,3 +304,20 @@ def delete_goods_type(request, goods_type_id):
     goods_type = GoodsType.objects.get(pk=goods_type_id)
     goods_type.delete()
     return HttpResponseRedirect('/store/list_goods_type/')
+
+
+def order_list(request, status):
+    """订单列表"""
+    store_id = request.COOKIES.get('has_store')
+    order_lst = OrderDetail.objects.filter(order__order_status=status, goods_store=store_id)
+    return render(request, 'store/order_list.html', locals())
+
+
+def order_status(request, status):
+    """订单"""
+    id = request.GET.get("id")
+    referer = request.META.get('HTTP_REFERER')
+    order = Order.objects.filter(order_id=id).first()
+    order.order_status = status
+    order.save()
+    return HttpResponseRedirect(referer)

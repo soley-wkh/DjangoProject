@@ -2,12 +2,24 @@
 {% block title %}
     首页
 {% endblock %} }
-{% block style %}
+{% block topfiles %}
     <script type="text/javascript" src="/static/user/js/jquery-1.12.4.min.js"></script>
     <script type="text/javascript" src="/static/user/js/jquery-ui.min.js"></script>
     <script type="text/javascript" src="/static/user/js/slide.js"></script>
 {% endblock %}
-{% block content %}
+{% block body %}
+    <div class="navbar_con">
+        <div class="navbar">
+            <h1 class="fl">全部商品分类</h1>
+            <ul class="navlist fl">
+                <li><a href="">首页</a></li>
+                <li class="interval">|</li>
+                <li><a href="">手机生鲜</a></li>
+                <li class="interval">|</li>
+                <li><a href="">抽奖</a></li>
+            </ul>
+        </div>
+    </div>
     <div class="center_con clearfix">
         <ul class="subnav fl">
             <li><a href="#model01" class="fruit">新鲜水果</a></li>
@@ -53,7 +65,7 @@
                     {% for goods in goods_type.goods_list %}
                         <li>
                             <h4><a href="#">{{ goods.goods_name }}</a></h4>
-                            <a href="#"><img src="/static/{{ goods.goods_image }}"></a>
+                            <a href="/user/detail/?goods_id={{ goods.id }}"><img src="/static/{{ goods.goods_image }}"></a>
                             <div class="prize">¥ {{ goods.goods_price }}</div>
                         </li>
                     {% endfor %}
@@ -63,7 +75,7 @@
     {% endfor %}
 
 {% endblock %}
-{% block script %}
+{% block bottom %}
     <script type="text/javascript">
         BCSlideshow('focuspic');
         var oFruit = document.getElementById('fruit_more');

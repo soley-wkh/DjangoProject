@@ -26,6 +26,9 @@ urlpatterns = [
     path('list_goods_type/', views.list_goods_type, name='list_goods_type'),  # 商品类型列表
     path('delete_goods_type/<int:goods_type_id>', views.delete_goods_type, name='delete_goods_type'),  # 删除商品类型
     path('add_goods_type/', views.add_goods_type, name='add_goods_type'),  # 添加商品类型
+
+    re_path(r'order_list/(?P<status>\d+)', views.order_list, name='order_list'),  # 订单列表
+    re_path(r'order_status/(?P<status>\d+)', views.order_status, name='order_status'),  # 订单状态
 ]
 
 urlpatterns += [

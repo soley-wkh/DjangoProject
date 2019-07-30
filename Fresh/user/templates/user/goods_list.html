@@ -1,8 +1,13 @@
-{% extends 'user/base.html' %}
+{% extends 'user/base_detail_list.html' %}
 {% block title %}
     商品列表
 {% endblock %}
-{% block content %}
+{% block main_content %}
+    <div class="breadcrumb">
+        <a href="#">全部分类</a>
+        <span>></span>
+        <a href="#">新鲜水果</a>
+    </div>
     <div class="main_wrap clearfix">
         <div class="l_wrap fl clearfix">
             <div class="new_goods">
@@ -33,7 +38,7 @@
                 {% for goods in goods_lst %}
                     <li>
                         <a href="/user/detail/?goods_id={{ goods.id }}"><img src="/static/{{ goods.goods_image }}"></a>
-                        <h4><a href="detail.html">{{ goods.goods_name }}</a></h4>
+                        <h4><a href="/user/detail/?goods_id={{ goods.id }}">{{ goods.goods_name }}</a></h4>
                         <div class="operate">
                             <span class="prize">￥{{ goods.goods_price }}</span>
                             <span class="unit">{{ goods.goods_price }}/500g</span>

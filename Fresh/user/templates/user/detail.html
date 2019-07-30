@@ -1,31 +1,43 @@
-{% extends 'user/base.html' %}
+{% extends 'user/base_detail_list.html' %}
 {% block title %}
     商品详情
 {% endblock %}
-{% block content %}
+{% block main_content %}
+    <div class="breadcrumb">
+        <a href="#">全部分类</a>
+        <span>></span>
+        <a href="#">新鲜水果</a>
+        <span>></span>
+        <a href="#">商品详情</a>
+    </div>
     <div class="goods_detail_con clearfix">
-        <div class="goods_detail_pic fl"><img src="/static/{{ goods.goods_image }}"></div>
+        <div class="goods_detail_pic fl"><img width="350px;" height="350px;" src="/static/{{ goods.goods_image }}"></div>
 
         <div class="goods_detail_list fr">
             <h3>{{ goods.goods_name }}</h3>
             <p>{{ goods.goods_description }}</p>
             <div class="prize_bar">
-                <span class="show_pirze">¥<em>{{ goods.goods_price }}</em></span>
+                <span class="show_pirze">¥<em id="goods_price">{{ goods.goods_price }}</em></span>
                 <span class="show_unit">单  位：500g</span>
             </div>
-            <div class="goods_num clearfix">
-                <div class="num_name fl">数 量：</div>
-                <div class="num_add fl">
-                    <input type="text" class="num_show fl" value="1">
-                    <a href="javascript:;" class="add fr">+</a>
-                    <a href="javascript:;" class="minus fr">-</a>
+            <form action="{% url 'user:place_order' %}" method="post">
+                {% csrf_token %}
+                <div class="goods_num clearfix">
+                    <div class="num_name fl">数 量：</div>
+                    <div class="num_add fl">
+                        <input type="text" id="goods_num" class="num_show fl" name="count" value="1">
+                        <input type="hidden" id="goods_id" class="fl" name="goods_id" value="{{ goods.id }}">
+                        <a id="add" href="javascript:;" onclick="change_num('add')" class="add fr">+</a>
+                        <a id="minus" href="javascript:;" onclick="change_num('minus')" class="minus fr">-</a>
+                    </div>
                 </div>
-            </div>
-            <div class="total">总价：<em>16.80元</em></div>
-            <div class="operate_btn">
-                <a href="javascript:;" class="buy_btn">立即购买</a>
-                <a href="javascript:;" class="add_cart" id="add_cart">加入购物车</a>
-            </div>
+                <div class="total">总价：<em id="total">{{ goods.goods_price }}</em><em>元</em></div>
+                <div class="operate_btn">
+{#                    <a href="javascript:;" class="buy_btn">立即购买</a>#}
+                    <input type="submit" class="buy_btn" value="立即购买">
+                    <a href="javascript:;" class="add_cart" id="add_cart">加入购物车</a>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -66,4 +78,52 @@
         </div>
     </div>
 
+{% endblock %}
+{% block bottom %}
+    <div class="add_jump"></div>
+{% endblock %}
+{% block bottomfiles %}
+    <script type="text/javascript" src="/static/user/js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript">
+
+        function change_num(ty) {
+            var num_value = $("#goods_num").val();
+            if (ty == 'add') {
+                $("#goods_num").val(++num_value);
+            } else {
+                if (num_value <= 1) {
+                    $("#goods_num").val(1)
+                } else {
+                    $("#goods_num").val(--num_value)
+                }
+            }
+
+            var price = $("#goods_price").text();
+            var total_price = price* num_value;
+            $("#total").text(parseFloat(total_price).toFixed(2))
+        }
+
+
+
+
+        var $add_x = $('#add_cart').offset().top;
+        var $add_y = $('#add_cart').offset().left;
+
+        var $to_x = $('#show_count').offset().top;
+        var $to_y = $('#show_count').offset().left;
+
+        $(".add_jump").css({'left': $add_y + 80, 'top': $add_x + 10, 'display': 'block'})
+        $('#add_cart').click(function () {
+            $(".add_jump").stop().animate({
+                    'left': $to_y + 7,
+                    'top': $to_x + 7
+                },
+                "fast", function () {
+                    $(".add_jump").fadeOut('fast', function () {
+                        $('#show_count').html(2);
+                    });
+
+                });
+        })
+    </script>
 {% endblock %}

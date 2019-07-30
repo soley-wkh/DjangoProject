@@ -71,10 +71,23 @@
         </a>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">商品管理:</h6>
+{#            <h6 class="collapse-header">商品管理:</h6>#}
             <a class="collapse-item" href="{% url 'store:add_goods' %}">添加商品</a>
             <a class="collapse-item" href="/store/list_goods/up/">在售商品列表</a>
             <a class="collapse-item" href="/store/list_goods/down/">下架商品列表</a>
+          </div>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOrder" aria-expanded="true" aria-controls="collapseOrder">
+          <i class="fas fa-fw fa-cog"></i>
+          <span>订单管理</span>
+        </a>
+        <div id="collapseOrder" class="collapse" aria-labelledby="headingOrder" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+{#            <h6 class="collapse-header">商品管理:</h6>#}
+            <a class="collapse-item" href="{% url 'store:order_list' 2%}">待处理订单</a>
+            <a class="collapse-item" href="{% url 'store:order_list' 3%}">已完成订单</a>
           </div>
         </div>
       </li>
