@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Manager
 
 
 # Create your models here.
@@ -43,14 +44,36 @@ class Store(models.Model):
         verbose_name = '店铺'
 
 
+import datetime
+
+
+class GoodsTypeManager(Manager):
+    def addType(self, name, logo="user/images/banner01.jpg"):
+        goods_type = GoodsType()
+        goods_type.name = name
+        now = datetime.datetime.now().strftime('%Y-%m-%d')
+        goods_type.description = "%s_%s" % (now, name)
+        goods_type.logo = logo
+        goods_type.save()
+        return goods_type
+
+
 class GoodsType(models.Model):
     name = models.CharField(max_length=32, verbose_name="商品种类")
     description = models.TextField(verbose_name="商品类型描述")
     logo = models.ImageField(upload_to='store/img', verbose_name="商品种类logo")
 
+    objects = GoodsTypeManager()
+
     class Meta:
         db_table = 'goodstype'
         verbose_name = '商品种类'
+
+
+class GoodsManager(Manager):
+    def up_goods(self):
+        """全部上架商品"""
+        return Goods.objects.filter(goods_under=1)
 
 
 class Goods(models.Model):
@@ -65,6 +88,8 @@ class Goods(models.Model):
 
     goods_type = models.ForeignKey(to=GoodsType, on_delete=models.CASCADE, verbose_name="商品类型")
     store = models.ForeignKey(to=Store, on_delete=models.CASCADE, verbose_name="商品店铺")
+
+    objects = GoodsManager()
 
     class Meta:
         db_table = 'goods'

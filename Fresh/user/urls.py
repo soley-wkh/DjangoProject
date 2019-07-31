@@ -6,9 +6,10 @@
     file   : urls.py
     
 """
-from django.urls import path,re_path
+from django.urls import path, re_path
 
 from . import views
+
 # from .views import RegisterView, LoginView
 
 app_name = 'user'
@@ -27,8 +28,11 @@ urlpatterns = [
     re_path(r'^$', views.UserInfoView.as_view(), name='user'),  # 用户中心信息页
     path('order/', views.UserOrderView.as_view(), name='order'),  # 用户中心订单页
     path('address/', views.AddressView.as_view(), name='address'),  # 用户中心地址页
+    path('cart/', views.cart, name='cart'),  # 购物车
+    path('add_cart/', views.add_cart, name='add_cart'),  # 添加购物车
 
 ]
 urlpatterns += [
-    path('base/', views.base)
+    path('base/', views.base),
+    # path("TestGoods/", views.TestGoods),
 ]

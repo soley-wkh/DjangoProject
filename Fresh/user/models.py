@@ -67,3 +67,19 @@ class OrderDetail(models.Model):
         db_table = 'f_order_detail'
         verbose_name = '订单详情'
         verbose_name_plural = verbose_name
+
+
+class Cart(models.Model):
+    goods_name = models.CharField(max_length=32, verbose_name='商品名称')
+    goods_price = models.FloatField(verbose_name='商品价格')
+    goods_total = models.FloatField(verbose_name='商品总价')
+    goods_number = models.IntegerField(verbose_name='商品数量')
+    goods_image = models.ImageField(upload_to='user/images', verbose_name='商品图片')
+    goods_id = models.IntegerField(verbose_name='商品id')
+    goods_store = models.IntegerField(verbose_name='商品商店')
+    user_id = models.IntegerField(verbose_name='用户id')
+
+    class Meta:
+        db_table = 'f_cart'
+        verbose_name = '购物车'
+        verbose_name_plural = verbose_name

@@ -1,4 +1,5 @@
 {% extends 'user/base.html' %}
+{% load staticfiles %}
 {% block title %}
     首页
 {% endblock %} }
@@ -22,12 +23,9 @@
     </div>
     <div class="center_con clearfix">
         <ul class="subnav fl">
-            <li><a href="#model01" class="fruit">新鲜水果</a></li>
-            <li><a href="#model02" class="seafood">海鲜水产</a></li>
-            <li><a href="#model03" class="meet">猪牛羊肉</a></li>
-            <li><a href="#model04" class="egg">禽类蛋品</a></li>
-            <li><a href="#model05" class="vegetables">新鲜蔬菜</a></li>
-            <li><a href="#model06" class="ice">速冻食品</a></li>
+            {% for goods_type in result_list %}
+                <li><a href="#model0{{ forloop.counter }}" class="kinds{{ forloop.counter }}">{{ goods_type.name }}</a></li>
+            {% endfor %}
         </ul>
         <div class="slide fl">
             <ul class="slide_pics">
@@ -49,7 +47,7 @@
     {% for goods_type in result_list %}
         <div class="list_model">
             <div class="list_title clearfix">
-                <h3 class="fl" id="model01">{{ goods_type.name }}</h3>
+                <h3 class="fl" id="model0{{ forloop.counter }}">{{ goods_type.name }}</h3>
                 <div class="subtitle fl">
                     <span>|</span>
                     <a href="#">鲜芒</a>
@@ -60,7 +58,7 @@
             </div>
 
             <div class="goods_con clearfix">
-                <div class="goods_banner fl"><img src="/static/user/images/banner01.jpg"></div>
+                <div class="goods_banner fl"><img src="/static/{{ goods_type.logo}} "></div>
                 <ul class="goods_list fl">
                     {% for goods in goods_type.goods_list %}
                         <li>
