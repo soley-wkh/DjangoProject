@@ -33,4 +33,5 @@ urlpatterns = [
 
 urlpatterns += [
     path('base/', views.base, name='base'),
+    path('agl/', views.ajax_goods_list, name='agl'),
 ]

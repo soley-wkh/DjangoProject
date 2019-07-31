@@ -3,7 +3,10 @@ import hashlib
 from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.shortcuts import HttpResponseRedirect
+from rest_framework import viewsets
 
+from .serializers import GoodsSerializer
+from .serializers import GoodsTypeSerializer
 from .models import *
 from user.models import OrderDetail, Order
 
@@ -321,3 +324,17 @@ def order_status(request, status):
     order.order_status = status
     order.save()
     return HttpResponseRedirect(referer)
+
+
+class GoodsViewSet(viewsets.ModelViewSet):
+    queryset = Goods.objects.all()
+    serializer_class = GoodsSerializer
+
+
+class GoodsTypeViewSet(viewsets.ModelViewSet):
+    queryset = GoodsType.objects.all()
+    serializer_class = GoodsTypeSerializer
+
+
+def ajax_goods_list(request):
+    return render(request, 'store/ajax_list_goods.html')

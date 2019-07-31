@@ -15,13 +15,23 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
+from rest_framework import routers
+
+from store.views import GoodsViewSet
+from store.views import GoodsTypeViewSet
 from user.views import index
+
+router = routers.DefaultRouter()
+router.register(r'goods', GoodsViewSet)  # 注册视图
+router.register(r'goods_type', GoodsTypeViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/', include('user.urls')),
     path('store/', include('store.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
+    re_path(r'^API/', include(router.urls)),  # restful 的跟路由
+    re_path(r'^api_auth', include('rest_framework.urls')),  # 接口认证
 ]
 
 urlpatterns += [
