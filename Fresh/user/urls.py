@@ -10,8 +10,6 @@ from django.urls import path, re_path
 
 from . import views
 
-# from .views import RegisterView, LoginView
-
 app_name = 'user'
 urlpatterns = [
     path('register/', views.RegisterView.as_view(), name='register'),  # 注册
@@ -35,4 +33,7 @@ urlpatterns = [
 urlpatterns += [
     path('base/', views.base),
     # path("TestGoods/", views.TestGoods),
+    path("send_email/", views.send_email),
+    path("get_add/", views.get_add),
+    path("swv/", views.small_white_views),
 ]

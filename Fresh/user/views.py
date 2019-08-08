@@ -118,13 +118,27 @@ def goods_list(request):
     return render(request, 'user/goods_list.html', locals())
 
 
+from django.core.cache import cache
+
+
 # 商品详情
 def detail(request):
-    goods_id = request.GET.get('goods_id')
-    if goods_id:
-        goods = Goods.objects.filter(id=goods_id).first()
-        if goods:
-            return render(request, 'user/detail.html', locals())
+    goods_data = cache.get('goods_data')
+    if goods_data:
+        goods = goods_data
+    else:
+        goods_id = request.GET.get('goods_id')
+        if goods_id:
+            goods_data = Goods.objects.filter(id=goods_id).first()
+            if goods_data:
+                cache.set('goods_data', goods_data, 2 * 60)
+                goods = goods_data
+                return render(request, 'user/detail.html', locals())
+    # goods_id = request.GET.get('goods_id')
+    # if goods_id:
+    #     goods = Goods.objects.filter(id=goods_id).first()
+    #     if goods:
+    #         return render(request, 'user/detail.html', locals())
     return HttpResponse('该商品已下架')
 
 
@@ -416,3 +430,78 @@ def TestGoods(request):
         goods.store = store
         goods.save()
     return HttpResponse("ok")
+
+
+from django.core.mail import send_mail
+from django.conf import settings
+
+
+def send_email(request):
+    recver = """3392279511@qq.com,
+    215558997@qq.com,
+    773733859@qq.com,
+    912575770@qq.com,
+    1529825704@qq.com,
+    1307128051@qq.com,
+    721788741@qq.com,
+    3303236612@qq.com,
+    710731910@qq.com,
+    329688391@qq.com,
+    626978318@qq.com,
+    419538402@qq.com,
+    1637805820@qq.com,
+    738389368@qq.com,
+    329688391@qq.com,
+    1225858108@qq.com,
+    329688391@qq.com,
+    452341999@qq.com,
+    1225858108@qq.com"""
+
+    html_message = '<h1>欢迎您成为***注册会员</h1>请点击下面链接激活您的账户<br/><a href="http://127.0.0.1:8000/user/active/">http://127.0.0.1:8000/user/active/</a>'
+
+    send_mail(
+        'Subject here',
+        'Here is the message.',
+        settings.EMAIL_FROM,
+        recver.split(",\n"),
+        html_message=html_message
+    )
+    return HttpResponse('ok')
+
+
+from CeleryTask.tasks import add
+
+
+def get_add(request):
+    add.delay(2, 3)
+    return JsonResponse({'status': 200})
+
+
+# def small_white_views(request):
+#     print("我是小白视图")
+#     raise TypeError("我就不想好好的")
+#     return HttpResponse("我是小白视图")
+
+def small_white_views(request):
+    # print("我是小白视图")
+
+    rep = HttpResponse("I am rep")
+    rep.render = lambda: HttpResponse("hello world")
+    return rep
+
+# def small_white_views(request):
+#     # print("我是小白视图")
+#     def hello():
+#         return HttpResponse("hello world")
+#     rep = HttpResponse("I am rep")
+#     rep.render = hello
+#     return rep
+
+# def small_white_views(request):
+#     print("我是小白视图")
+#     def render():
+#         print("hello world")
+#         return HttpResponse("98k")
+#     rep = HttpResponse("od")
+#     rep.render = render
+#     return rep

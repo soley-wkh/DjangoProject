@@ -325,10 +325,12 @@ def order_status(request, status):
     order.save()
     return HttpResponseRedirect(referer)
 
-
+from django_filters.rest_framework import DjangoFilterBackend
 class GoodsViewSet(viewsets.ModelViewSet):
     queryset = Goods.objects.all()
     serializer_class = GoodsSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['goods_price', 'goods_name']
 
 
 class GoodsTypeViewSet(viewsets.ModelViewSet):
